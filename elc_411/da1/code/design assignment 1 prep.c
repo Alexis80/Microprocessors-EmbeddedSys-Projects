@@ -29,18 +29,18 @@ int main(void)
     
    
     
-        void AccessandExtractRegister ()
-        {
+    // Access and Extract Register 
+        
             //take the values of the register and stores them into
             //corresponding varaibles.
             implementer = (reg_val >> 24) & 0xFF;
-            variant     = (reg_val >> 20) & 0xFF;
-            partno      = (reg_val >> 04) & 0xFF;
-            revision    = (reg_val >> 00) & 0xFF;
-        }
+            variant     = (reg_val >> 20);
+            partno      = (reg_val >> 04);
+            revision    = (reg_val >> 00);
         
-        void ManipulateCharString()
-        {
+        
+     // Manipulate Char String
+        
             //declares char string for 4.2
             char myname[] = "Alexis Kathleen Adie";
             int n,j,k;
@@ -59,7 +59,7 @@ int main(void)
                     }
                 }
             }
-        }
+        
 }
 
 
