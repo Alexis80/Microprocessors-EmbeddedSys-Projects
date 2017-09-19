@@ -18,12 +18,12 @@ int main()
         
         //PART 1 CODE 
         
-        //Sets Pin_1(LED1) to one and then sets it off for //500 ms
+        //Sets Pin_1(LED1) to one and then sets it off for 500 ms
         Pin_1_Write(1);
-        CyDelay(1000);
-        //Sets Pin_1(LED1) to zero and then sets it off for //500 ms
+        CyDelay(500);
+        //Sets Pin_1(LED1) to zero and then sets it off for 500 ms
         Pin_1_Write(0);
-        CyDelay(1000);
+        CyDelay(500);
         
     }
 }
