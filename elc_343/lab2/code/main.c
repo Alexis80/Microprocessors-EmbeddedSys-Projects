@@ -13,7 +13,7 @@ int main()
         
         //Pin_2=button so when the button is pressed
         //Pin_3 (LED2) goes off since the circuit is pulled 
-        //and the circuit is disconnected
+        //up and the circuit is disconnected
         Pin_3_Write(Pin_2_Read());
         
         //PART 1 CODE 
