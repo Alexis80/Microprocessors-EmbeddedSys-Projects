@@ -1,4 +1,3 @@
-
 #include "project.h"
 #include "stdio.h"
 
@@ -6,75 +5,74 @@ CY_ISR_PROTO(my_isr);
 
 CY_ISR(my_isr)
 {
-    static int count = 0;   // must be static, so value retained between interrupts, one time initialization
-    
-    //****************************************************************************************        
-    // Add code here to alternately drive VDAC8 to 1/4 full scale and 3/4 full scale
-    //
-    //****************************************************************************************        
-    
-    
-    if(count==0)
+    // one time initialization of count used to toggle between values
+    static int count = 0;   
+          
+    // drives VDAC8 to 1/4 full scale and 3/4 full scale
+    if (count == 0)
     {
-       VDAC8_SetValue(1/4);
+        VDAC8_SetValue(64);
     }
     else
     {
-       VDAC8_SetValue(3/4);
+        VDAC8_SetValue(192);
     }
-    // Don't change code below
+
     isr_1_ClearPending();
-    count = 1 - count;      // toggle between 0 and 1
+    // toggles between 0 and 1
+    count = 1 - count;      
 }
 
 int
 main( void )
 
 {
-    int     sar_result;     // holds result from ADC_SAR
-    int     volts_int;      // integer part of volts, for string formatting to overcome bug in PSoC Creator
-    int     volts_frac;     // fractional part of volts, for string formatting to overcome bug in PSoC Creator
-    char    disp_str[17];   // char array large enough to hold one line for display
+    // sar_result holds result from ADC_SAR
+    int     sar_result;     
+    // holds integer part and fractional part of volts respectively
+    int     volts_int;      
+    int     volts_frac; 
+    // char array that  holds exactly one line for display
+    char    disp_str[17];   
+    // floating point voltage result
+    double  volts;          
+    /* Enable global interrupts. */
+    CyGlobalIntEnable; 
     
-    double  volts;          // student computes this, as a function of sar_result
-    
-    CyGlobalIntEnable; /* Enable global interrupts. */
-    
-    // Initialization, start your engines ...
+    // Initializes the converters, ADC starts converting, and calling the function
     ADC_SAR_Start();
-    ADC_SAR_StartConvert();     // Needed because ADC_SAR is free-running
+    ADC_SAR_StartConvert();     
     VDAC8_Start();
     isr_1_StartEx(my_isr);
     LCD_Char_Start();
     
-    // Loop forever
-    while (1)
-    {
-        sar_result = ADC_SAR_GetResult16();                         // get new ADC value
+        // Loops forever
+        while (1)
+        {
+            // get new ADC value
+            sar_result = ADC_SAR_GetResult16();                         
         
-        //****************************************************************************************        
-        // Uncomment and fill in code below, to convert sar_result to the corresponding (floating point) voltage
-        //ADC assumes that 5 volts is 1023 so 1023/5=204.6, ADC val=V *204.6
-        //Result_V = ( Reference in V / 1023) * Result ; (6/256)*result
-         volts = sar_result*(6/256);
-        //
-        //****************************************************************************************        
-        
-        // Don't change anything below!
-        volts_int = (int) volts;                                    // get integer part
-        volts_frac = (int) ((volts - volts_int) * 1000 + 0.5);      // get fractional part as a 3-digit integer
-        
-        // Display the string on top line, left justified
-        LCD_Char_ClearDisplay();
-        LCD_Char_Position(0, 0);
-        sprintf( disp_str, "code=%4d", sar_result);
-        LCD_Char_PrintString(disp_str);
+            //converts sar_result to the corresponding floating point voltage
+            volts = (2.048 * sar_result)/1023;
 
-        // Display the string on bottom line, left justified
-        LCD_Char_Position(1, 0);
-        sprintf( disp_str, "volts=%d.%03d", volts_int, volts_frac );
-        LCD_Char_PrintString(disp_str);
-        
-        CyDelay(500);                                               // a little time for display to stabilize
+            // get integer part of volts
+            volts_int = (int) volts;
+            // get fractional part of volts as 3 digit int     
+            volts_frac = (int) ((volts - volts_int) * 1000 + 0.5);      
+
+            // Display the string on top line, left justified
+            LCD_Char_ClearDisplay();
+            LCD_Char_Position(0, 0);
+            sprintf( disp_str, "code=%4d", sar_result);
+            LCD_Char_PrintString(disp_str);
+
+            // Display the string on bottom line, left justified
+            LCD_Char_Position(1, 0);
+            sprintf( disp_str, "volts=%d.%03d", volts_int, volts_frac );
+            LCD_Char_PrintString(disp_str);
+
+            //delay to allow display to stabilize
+            CyDelay(500);                                               
     }
 }
+
