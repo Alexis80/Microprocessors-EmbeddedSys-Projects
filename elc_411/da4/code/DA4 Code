@@ -8,7 +8,7 @@
 #define FIX_FACTOR      (1   <<  FIX_n   )  // fixed point fraction factor (2^n)
 #define FIX__0_5        (1   << (FIX_n-1))  // 0.5 expressed in UQ16.16
 #define FIX__1_0        (1   <<  FIX_n   )  // 1.0 expressed in UQ16.16
-
+extern uint32 volatile int_count;
 // Procedure:
 //      fix2int - round a fixed point value to the nearest integer
 // Inputs:
@@ -17,37 +17,21 @@
 //      result of rounding the fixed point value to nearst integer, in uint32_t container
 uint32_t fix2int( uint32_t fix )
 {
-    //n bits
-       float bitn= 10.0*n;
-       fix =(int) (fix*bitn+0.5)/bitn;
-    
-    //fix= (int) (fix*100+0.5)/100.0;
-    
-    //the variable F would receive the value 2.468, not the rounded value of 2.47 which would 
-    //be appropriate for most monetary uses. To assign the rounded result of 2.47 into variable R, we would use the expression
-
-  //  R = (int) (F*100+0.5) / 100.0;
-
-  //  which would offset the decimal point two places by multiplying F by 100 (resulting in 246.8), 
-    //then bump the value to 247.3, and then truncate the .3 portion by casting the value into integer 
-    //form, and finally reposition the decimal point by dividing the result be 100.0. It is essential to w
-    //rite the value 100 in floating point notation (with the .0 attached) to prevent C from performing integer 
-    //division which would corrupt the results.
-    //round(uint32_t fix);
-
+    //Adds 0.5 in fixed point and discards the 16 fractional bits to zero
+    return (fix +FIX__0_5) >> FIX_n;
 }
 
 // Procedure:
-//      fix2double - Convert a fixed point value to double precision 
+//      fix2double - Convert a fixed point value to double precision
 // Inputs:
 //      fix - value to convert
 // Return value:
 //      double precision representation of fixed point value
 double fix2double( uint32_t fix )
 {
-
-        fix= (int) (fix+0.5);
-    
+    //Adds 0.5 in fixed point and discards the 32 fractional bits to zero
+    fix = (fix + FIX__0_5) >> 16;
+    return fix;
 }
 
 // Procedure:
@@ -58,7 +42,7 @@ double fix2double( uint32_t fix )
 //      fixed point approximation of the input value, in uint32_t container
 uint32_t double2fix( double x )
 {
-        x= (int) (x+0.5);
+    return (uint32_t) (x * FIX_FACTOR + 0.5);
 }
 
 // Procedure:
@@ -103,6 +87,8 @@ void fix2decimalstr( uint32_t x, char *str, int dotn )
 
 int main()
 {
+    isr_1_Start();
+    
     int     k;              // Current position of bouncing box (relative to LCD)
     int     direction;      // +1 --> move right, -1 --> move left
     char    num_str[17];    // Array to render the value of rate as a string
@@ -115,9 +101,9 @@ int main()
     
     CyGlobalIntEnable; /* Enable global interrupts. */
 
-    uint32_t    delay =  20 * FIX__1_0;         // UQ16.16
-    uint32_t    llim  =  20 * FIX__1_0;         // Upper limit of delay expressed in UQ16.16
-    uint32_t    ulim  = 200 * FIX__1_0;         // Upper limit of delay expressed in UQ16.16
+    uint32_t    delay =  20 * FIX__1_0;  // UQ16.16
+    uint32_t    llim  =  20 * FIX__1_0;  // Upper limit of delay expressed in UQ16.16
+    uint32_t    ulim  = 200 * FIX__1_0;  // Upper limit of delay expressed in UQ16.16
 
     uint32_t    incr = double2fix( 10.0/3.0 );  // Represent 3.33... in fixed point
     
@@ -135,8 +121,8 @@ int main()
         fix2decimalstr(delay, num_str, 3);
         
         // Generate composite message string
-        sprintf( msg_str, "Delay=%7s ms", num_str );
-
+    
+        sprintf(msg_str,"Cnt=%12lu",int_count );
         // Render current state onto the display
         // Top line is bouncing square
         // Bottom line is current delay
@@ -145,14 +131,12 @@ int main()
         LCD_Display_Position(1, 0);                 // Position on bottom line
         LCD_Display_PrintString(msg_str);           // Print the msg on bottom line
 
-        // *****************************************************************************************
-        
-DIG_IN_PIN_Read() ;
-    DIG_OUT_PIN_Write(DIG_IN_PIN) ;
-        // *****************************************************************************************
-        
-        
-        // *****************************************************************************************
+   
+      //This code was moved to the isr in part 2
+      //DIG_IN_PIN_Read() ;
+      // DIG_OUT_PIN_Write(DIG_IN_PIN_Read()) ;
+    
+
         
         CyDelay(fix2int(delay));                    // Delay based on integer part of delay
         k += direction;                             // Compute new position
@@ -168,7 +152,7 @@ DIG_IN_PIN_Read() ;
             delay -= incr;
         if (sw3 == 0 && sw3_prev == 1)              // If Switch 3 button down event, increase delay
             delay += incr;
-        sw2_prev = sw2;                         // Update previous sw2 state
+        sw2_prev = sw2;                             // Update previous sw2 state
         sw3_prev = sw3;                         // Update previous sw3 state
 
         // Saturate delay to upper and lower limits
@@ -176,5 +160,4 @@ DIG_IN_PIN_Read() ;
         if (delay < llim) delay = llim;
     }
 }
-
 
