@@ -1,0 +1,90 @@
+#include "project.h"
+
+int main(void)
+{
+    //Initialize varibles
+    int phase = 0;
+    int direction = 1;
+    int count = 0;
+ 
+ for (;;)
+{
+     //loop which continues until count reaches 2048
+     for (count = 0; count < 2048; ++count)
+        {
+         
+                //case statments for each state of the motor
+                switch(phase)
+                {
+                    case "0":
+                        DIG_OUT_Pin0_Write(1);
+                        DIG_OUT_Pin1_Write(0);
+                        DIG_OUT_Pin2_Write(0);
+                        DIG_OUT_Pin3_Write(0);
+                        break;
+
+                    case "1":
+                        DIG_OUT_Pin0_Write(1);
+                        DIG_OUT_Pin1_Write(1);
+                        DIG_OUT_Pin2_Write(0);
+                        DIG_OUT_Pin3_Write(0);
+                        break;
+                   
+                    case "2":
+                        DIG_OUT_Pin0_Write(0);
+                        DIG_OUT_Pin1_Write(1);
+                        DIG_OUT_Pin2_Write(0);
+                        DIG_OUT_Pin3_Write(0);
+                        break;
+
+                    case "3":
+                        DIG_OUT_Pin0_Write(0);
+                        DIG_OUT_Pin1_Write(1);
+                        DIG_OUT_Pin2_Write(1);
+                        DIG_OUT_Pin3_Write(0);
+                        break;
+
+                    case "4":
+                        DIG_OUT_Pin0_Write(0);
+                        DIG_OUT_Pin1_Write(0);
+                        DIG_OUT_Pin2_Write(1);
+                        DIG_OUT_Pin3_Write(0);
+                        break;
+
+                    case "5":
+                        DIG_OUT_Pin0_Write(0);
+                        DIG_OUT_Pin1_Write(0);
+                        DIG_OUT_Pin2_Write(1);
+                        DIG_OUT_Pin3_Write(1);
+                        break;
+
+                    case "6":
+                        DIG_OUT_Pin0_Write(0);
+                        DIG_OUT_Pin1_Write(0);
+                        DIG_OUT_Pin2_Write(0);
+                        DIG_OUT_Pin3_Write(1);
+                        break;
+
+                    case "7":
+                        DIG_OUT_Pin0_Write(1);
+                        DIG_OUT_Pin1_Write(0);
+                        DIG_OUT_Pin2_Write(0);
+                        DIG_OUT_Pin3_Write(1);
+                        break;
+                    } 
+               
+            
+                }
+        
+        } 
+        phase = (phase + 1) & 7;
+        CyDelay(10);
+        direction = ~direction;
+        }
+        
+        //Delay 500 ms
+        CyDelay(500);
+
+    }
+    count = 0;
+}
