@@ -1,150 +1,103 @@
+
+       
 #include "project.h"
 
 int main(void)
 {
-    //Initialize varibles
+    //Initialize variables
     int phase = 0;
     int dir = 1;
     int count = 0;
  
- for (;;)
-{
-     for (count = 0; count < 2048; ++count)
-        {
-        switch(dir)
+    for (;;)
+    {
+        //Increment the count and switch cases until count reaches 2047
+        //This is at the 20 millisecond mark when turning clockwise 
+        for (count = 0 ; count < 2047; ++count)   
         {   
+            //Switch cases to change the state of the motor
+            switch(phase)					 
+            {
+            case 0:
+                DIG_OUT_Pin0_Write(1);
+                DIG_OUT_Pin1_Write(0);
+                DIG_OUT_Pin2_Write(0);
+                DIG_OUT_Pin3_Write(0);
+                break;
+
             case 1:
-                //Generate State Cases for Driving Motor
-                switch(phase)
-                {
-                    case 0:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 1:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-                   
-                    case 2:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 3:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 4:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 5:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-
-                    case 6:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-
-                    case 7:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-                    } 
+                DIG_OUT_Pin0_Write(1);
+                DIG_OUT_Pin1_Write(1);
+                DIG_OUT_Pin2_Write(0);
+                DIG_OUT_Pin3_Write(0);
                 break;
-             case (-1):
-                   //Generate State Cases for Driving Motor
-                switch(phase)
-                {
-                    case 7:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 6:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-                   
-                    case 5:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 4:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(1);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 3:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(0);
-                        break;
-
-                    case 2:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(1);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-
-                    case 1:
-                        DIG_OUT_Pin0_Write(0);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-
-                    case 0:
-                        DIG_OUT_Pin0_Write(1);
-                        DIG_OUT_Pin1_Write(0);
-                        DIG_OUT_Pin2_Write(0);
-                        DIG_OUT_Pin3_Write(1);
-                        break;
-                }
+           
+            case 2:
+                DIG_OUT_Pin0_Write(0);
+                DIG_OUT_Pin1_Write(1);
+                DIG_OUT_Pin2_Write(0);
+                DIG_OUT_Pin3_Write(0);
                 break;
-        
-        } 
-        phase = (phase + 1) & 7;
-        CyDelay(10);
-        dir = ~dir;
-        }
-        
-        //Delay 500 ms
+
+            case 3:
+                DIG_OUT_Pin0_Write(0);
+                DIG_OUT_Pin1_Write(1);
+                DIG_OUT_Pin2_Write(1);
+                DIG_OUT_Pin3_Write(0);
+                break;
+
+            case 4:
+                DIG_OUT_Pin0_Write(0);
+                DIG_OUT_Pin1_Write(0);
+                DIG_OUT_Pin2_Write(1);
+                DIG_OUT_Pin3_Write(0);
+                break;
+
+            case 5:
+                DIG_OUT_Pin0_Write(0);
+                DIG_OUT_Pin1_Write(0);
+                DIG_OUT_Pin2_Write(1);
+                DIG_OUT_Pin3_Write(1);
+                break;
+
+            case 6:
+                DIG_OUT_Pin0_Write(0);
+                DIG_OUT_Pin1_Write(0);
+                DIG_OUT_Pin2_Write(0);
+                DIG_OUT_Pin3_Write(1);
+                break;
+
+            case 7:
+                DIG_OUT_Pin0_Write(1);
+                DIG_OUT_Pin1_Write(0);
+                DIG_OUT_Pin2_Write(0);
+                DIG_OUT_Pin3_Write(1);
+                break;
+                
+            }
+            //If spinning clockwise (indicated by 1)
+            if (dir == 1)
+            {
+                //The phase will increment by 1, while being masked by 4b0111
+                phase = (phase + 0b001) & 7;
+                CyDelay(10);
+            }
+            //If spinning counter-clockwise (indicated by 0)
+            else if (dir == 0)
+            {
+                //The phase will decrement by 1, while being masked by 4b0111
+                phase = (phase - 0b001) & 7;
+                CyDelay(10);
+            }
+        }     
+        //This delay acts as the half second break prior to CW changing to CCW
         CyDelay(500);
-
+        
+        //This sets the direction to be counter-clockwise and
+        //then is masked by 1 bit to only set the value as either 0 or 1
+        dir = (~dir) & 0x1;
+        
     }
-    count = 0;
+        //Resets the count
+        count = 0;
 }
